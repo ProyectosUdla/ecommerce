@@ -1,24 +1,36 @@
 package com.ads.ecommerce.order.service;
 
-import com.ads.ecommerce.order.client.CustomerClient;
-import com.ads.ecommerce.order.client.ProductClient;
-import com.ads.ecommerce.order.dto.*;
-import com.ads.ecommerce.order.exception.OrderNotFoundException;
-import com.ads.ecommerce.order.model.*;
-import com.ads.ecommerce.order.repository.PaymentRepository;
-import com.ads.ecommerce.order.repository.SaleOrderRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ads.ecommerce.order.client.CustomerClient;
+import com.ads.ecommerce.order.client.ProductClient;
+import com.ads.ecommerce.order.dto.CustomerDTO;
+import com.ads.ecommerce.order.dto.OrderLineRequest;
+import com.ads.ecommerce.order.dto.OrderLineResponse;
+import com.ads.ecommerce.order.dto.OrderRequest;
+import com.ads.ecommerce.order.dto.OrderResponse;
+import com.ads.ecommerce.order.dto.PaymentRequest;
+import com.ads.ecommerce.order.dto.PaymentResponse;
+import com.ads.ecommerce.order.dto.ProductDTO;
+import com.ads.ecommerce.order.exception.OrderNotFoundException;
+import com.ads.ecommerce.order.model.OrderLine;
+import com.ads.ecommerce.order.model.OrderStatus;
+import com.ads.ecommerce.order.model.Payment;
+import com.ads.ecommerce.order.model.SaleOrder;
+import com.ads.ecommerce.order.repository.PaymentRepository;
+import com.ads.ecommerce.order.repository.SaleOrderRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

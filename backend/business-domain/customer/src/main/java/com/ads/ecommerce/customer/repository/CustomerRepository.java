@@ -24,5 +24,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByEmail(String email);
     
     boolean existsByTaxId(String taxId);
-
+    
+        // Usar customerCode en lugar de code
+    Optional<Customer> findTopByCustomerCodeStartingWithOrderByCustomerCodeDesc(String prefix);
 }

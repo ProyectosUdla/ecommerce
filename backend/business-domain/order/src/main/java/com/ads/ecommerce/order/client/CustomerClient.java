@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.ads.ecommerce.order.dto.CustomerDTO;
 
-@FeignClient(name = "customer-service",url = "http://localhost:8081" )
+@FeignClient(name = "customer-service",url = "http://localhost:8081",  configuration = com.ads.ecommerce.order.config.FeignConfig.class)
 public interface CustomerClient {
     
     @GetMapping("/api/v1/customers/{id}")
     CustomerDTO getCustomer(@PathVariable("id") Long id);
+
+    
 }

@@ -2,6 +2,7 @@ package com.ads.ecommerce.customer.service;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -126,14 +127,55 @@ public class CustomerService {
     }
     
     // Métodos auxiliares
-    private String generateCode(CustomerType type) {
-        String prefix = switch (type) {
+      public String generateCode(CustomerType type) {
+        String prefix = getPrefix(type);
+        String yearPrefix = prefix + "-" + Year.now().getValue();
+        
+        Long lastSequence = findLastSequenceNumber(yearPrefix);
+        Long nextSequence = lastSequence + 1;
+        
+        return String.format("%s-%05d", yearPrefix, nextSequence);
+    }
+    
+    private String getPrefix(CustomerType type) {
+        return switch (type) {
             case VIP -> "VIP";
             case WHOLESALE -> "WHO";
             default -> "REG";
         };
-        return prefix + "-" + Year.now().getValue() + "-" + String.format("%05d", counter++);
     }
+    
+    private Long findLastSequenceNumber(String yearPrefix) {
+        try {
+            Optional<Customer> lastCustomer = customerRepository
+                .findTopByCustomerCodeStartingWithOrderByCustomerCodeDesc(yearPrefix);
+            
+            if (lastCustomer.isPresent()) {
+                String lastCode = lastCustomer.get().getCustomerCode(); // Usar getCustomerCode()
+                return extractSequenceNumber(lastCode);
+            }
+            return 0L;
+            
+        } catch (Exception e) {
+            // Log the error and return 0 as fallback
+            e.printStackTrace();
+            return 0L;
+        }
+    }
+    
+    private Long extractSequenceNumber(String code) {
+        try {
+            if (code != null && code.contains("-")) {
+                String sequencePart = code.substring(code.lastIndexOf("-") + 1);
+                return Long.parseLong(sequencePart);
+            }
+        } catch (NumberFormatException e) {
+            // Log warning
+            System.err.println("Error extrayendo número de secuencia del código: " + code);
+        }
+        return 0L;
+    }
+    
     
     private CustomerResponse toResponse(Customer customer) {
         CustomerResponse response = new CustomerResponse();
